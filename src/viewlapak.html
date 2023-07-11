@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+    
+    <link rel="icon" href="./image/smarthome.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="./css/bootstrap.css">
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="./css/fontawesome-free-6.1.2/css/all.css">
+
+    <title>My Lapak</title>
+
+    <link rel="stylesheet" type="text/css" href="./css/mylapak.css">
+    <style>
+      .imgview {
+        width: 400px;
+        height: 400px;
+      }
+      .container-lapak {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-left: 5%;
+        margin-right: 5%;
+        padding: 16px;
+        background-color: #fff;
+      }
+      @media (max-width:526px){
+        .imgview {
+          width: 200px;
+          height: 200px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-light shadow">
+        <div class="container-fluid">
+          <a class="navbar-brand text-uppercase fw-bold" href="#">
+            <img class="mylapaklogo d-inline-block align-text-top ms-2" src="./image/smarthome-black.png" alt="logo">
+            <span class="ms-2">My Lapak</span>
+          </a>
+        </div>
+    </nav>
+    <a href="index.html" class="btn btn-warning mt-4 ms-2"><i class="fa-solid fa-arrow-left"></i> Back to list</a>
+    <div class="container-lapak mt-4 mb-4" id="viewlapak">
+
+    </div>
+
+    <script src="./js/bundle.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+    <script>
+      function emailmsg(){
+        window.location.href = "mailto:faizalnf3245@gmail.com"
+      }
+      function fbmsg(){
+        window.location.href = "https://web.facebook.com/profile.php?id=100088498143378"
+      }
+      function twitmsg(){
+        window.location.href = "https://twitter.com/AsankaLigar1800"
+      }
+      $(document).ready(function () {
+        let searchParams = new URLSearchParams(window.location.search)
+        var params = searchParams.get('id')
+        $.get("http://localhost:8080/api/lapak/"+params,
+          function (response) {
+            // console.log(response.data)
+            var price = response["price"]
+            var f = new Intl.NumberFormat('id-ID', {  
+              currency: 'IDR',
+              style: 'currency'
+            })
+            var formatedPrice = f.format(price) 
+            $("#viewlapak").append(
+              '<h3 class="text-center mt-4 text-uppercase fw-bold">'+response["title_lapak"]+'</h3>'+
+              '<center><img class="imgview" src="'+response["img_lapak"]+'"></center>'+
+              '<h4 class="text-center mt-4">'+formatedPrice+'</h4>'+
+              '<p class="fs-4 ms-5 mt-4">'+response["description_lapak"]+'</p>'+
+              '<center>'+
+              '<button onclick="emailmsg()" class="btn btn-primary mx-2 my-3 shadow"><i class="fa-solid fa-envelope"></i></button>'+
+              '<button onclick="fbmsg()" class="btn btn-primary mx-2 my-3 shadow"><i class="fa-brands fa-facebook-messenger"></i></button>'+
+              '<button onclick="twitmsg()" class="btn btn-primary mx-2 my-3 shadow"><i class="fa-brands fa-twitter"></i></button>'+
+              '</center>'
+            )
+          },
+        );
+        
+        
+      });
+    </script>
+  </body>
+</html>

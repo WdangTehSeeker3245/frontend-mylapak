@@ -1,0 +1,154 @@
+<!doctype html>
+<html>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+    
+    <link rel="icon" href="./image/smarthome.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="./css/bootstrap.css">
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="./css/fontawesome-free-6.1.2/css/all.css">
+
+    <title>My Lapak</title>
+
+    <link rel="stylesheet" type="text/css" href="./css/preloader.css">
+    <link rel="stylesheet" type="text/css" href="./css/mylapak.css">
+  </head>
+  <body>
+    <div id="loader-warper">
+      <img id="logo-preload" src="./image/smarthome.png" width="100px" height="100px">
+      <h2 id="text-loading" class="mt-2 ms-2">Loading..</h2>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-light shadow">
+        <div class="container-fluid">
+          <a class="navbar-brand text-uppercase fw-bold" href="#">
+            <img class="mylapaklogo d-inline-block align-text-top ms-2" src="./image/smarthome-black.png" alt="logo">
+            <span class="ms-2">My Lapak</span>
+          </a>
+          <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+              </li>
+            </ul>
+          </div> -->
+        </div>
+    </nav>
+
+    <form id="searchForm">
+      <div class="input-group mt-2 px-3 py-3">
+        <input type="text" class="form-control" id="searchbar" placeholder="search product" aria-label="search" aria-describedby="button-addon2">
+        <button class="btn btn-outline-secondary" type="submit" id="button-addon2"><i class="fas fa-search"></i></button>
+      </div>
+    </form>
+
+    <!-- List Barang -->
+    <div class="container-lapak mt-2">
+      <div class="row row-cols-sm-1 row-cols-lg-4 mx-auto" id="all-lapak">
+        <!-- 
+        <div class="col py-3">
+          <div class="card shadow" style="width: 18rem;">
+            <img src="https://4.bp.blogspot.com/-RncruiVcyks/T-VdrCzK9dI/AAAAAAAAEi4/lX8ya1lfOGA/s1600/beli-laptop-mati-di-malang.jpg" class="card-img-top" alt="laptop">
+            <div class="card-body">
+              <h5 class="card-title">Cari Penebas Laptop Rusak</h5>
+              <p class="card-text">Yang Mau Invest Atau Barter Laptop Monitor Pecah/Rusak, Case Rusak, Main Board Rusak Pokoknya Bisa Buat Ngoding 3 Bulan Sewa atau Beli Nyicil</p>
+              <a href="mailto:faizalnf3245@gmail.com" class="btn btn-primary">Rp. 500.000,00</a>
+            </div>
+          </div>
+        </div>
+         -->
+      </div>
+    </div>
+
+    <!-- Back To Top Button -->
+    <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
+
+
+    <script src="./js/bundle.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+
+    <!-- Script Preloader -->
+    <script type="text/javascript">
+      $( document ).ready(function() {
+       setTimeout(function(){
+           $('#loader-warper').addClass('loaded');
+           $('#loader-warper').remove();
+       }, 3000);
+      });
+   </script>
+
+   <!-- Back To Top Script -->
+
+   <script type="text/javascript">
+
+      var mybutton = document.getElementById("myBtn");
+
+      window.onscroll = function() {scrollFunction()};
+
+      function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+          mybutton.style.display = "block";
+        } else {
+          mybutton.style.display = "none";
+        }
+      }
+
+      function topFunction() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+      }
+    </script>
+    <script>
+      $(document).ready(function () {
+        // Handle Search Input
+        $('#searchForm').submit(function(event) {
+          event.preventDefault(); // Prevent the form from submitting
+
+          // Get input values
+          var query = $('#searchbar').val();
+          var replacedStringQuery = query.split(' ').join('+');
+          window.location.href = 'http://localhost:5173/search.html?q='+replacedStringQuery;
+        });
+
+        // Get All Products
+        $.ajax({
+        type: "GET",
+        url: "http://localhost:8080/api/lapak",
+        success: function (response) {
+          var raw = response
+          for (var i=0;i<raw.length;++i){
+            x=i+1
+            var price = response[i]["price"]
+            var f = new Intl.NumberFormat('id-ID', {  
+              currency: 'IDR',
+              style: 'currency'
+            })
+            var formatedPrice = f.format(price) 
+            $("#all-lapak").append(
+              '<div class="col py-3">'+
+                '<div class="card shadow" style="width: 18rem;">'+
+                  '<img src="'+response[i]["img_lapak"]+'" class="card-img-top" alt="">'+
+                  '<div class="card-body">'+
+                    '<h5 class="card-title">'+response[i]["title_lapak"]+'</h5>'+
+                    '<p class="card-text"><br/>'+formatedPrice+"<br/><br/>"+response[i]["short_description"]+'</p>'+
+                    '<a href="viewlapak.html?id='+response[i]["id"]+'" class="btn btn-primary">View Detail</a>'+
+                  '</div>'+
+                '</div>'+
+              '</div>'
+            )
+          }
+        },
+        });
+      });
+    </script>
+  </body>
+</html>
